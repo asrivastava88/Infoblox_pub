@@ -1,0 +1,16 @@
+---
+- name: Play Failed because...
+  debug:
+    msg: "'Comment' contains invalid characters. Please try again and use Alpha Numeric characters."
+  when: dns_change['msg'] == 'Comment contains invalid characters.'
+- name: Play Failed because...
+  debug:
+    msg: "Invalid input for IP Address field. Please try again with correct IPv4 Address input (eg: 1.2.3.4)."
+  when: dns_change['type'] == 'AdmConProtoError'
+- name: Play Failed because...
+  debug:
+    msg: "You may have entered wrong TTL Value or FQDN. Please validate the input. If still getting unexpected error, please contact your System Administrator for more details."
+  when:
+    - dns_change['msg'] != 'Comment contains invalid characters.'
+    - dns_change['type'] != 'AdmConProtoError'
+    - dns_change['failed'] == true

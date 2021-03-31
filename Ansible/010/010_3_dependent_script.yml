@@ -1,0 +1,16 @@
+---
+- name: Validating Input Errors
+  block:
+    - name: Creating DNS Record
+      community.general.nios_a_record:
+        name: "{{a_rec_3}}"
+        ipv4addr: "{{a_ip_3}}"
+        comment: "{{a_comment_3}}"
+        state: present
+        ttl: "{{a_ttl_3}}"
+        provider: "{{provider}}"
+      register: dns_change
+      notify: Third DNS Query
+
+  rescue:
+    - include_tasks: 010_play_errors.yml

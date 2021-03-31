@@ -1,0 +1,31 @@
+---
+- hosts: infoblox
+  connection: local
+
+  vars_prompt:
+    - name: cname_alias
+      prompt: Enter the Fully Qualified Domain Name for the 'CNAME' Record (eg - test.abc.com)
+      private: no
+    - name: cname_redir
+      prompt: Enter the Canonical value or FQDN to point the DNS to (eg - redirect.abc.com)
+      private: no
+    - name: cname_ttl
+      prompt: Enter the TTL value in seconds for the 'CNAME' Record
+      private: no
+      default: 300
+    - name: cname_comment
+      prompt: Enter the comment for the 'CNAME' Record
+      private: no
+
+  tasks:
+    - name: Creating A Record
+      community.general.nios_cname_record:
+        name: "{{cname_alias}}"
+        canonical: "{{cname_redir}}"
+        comment: "{{cname_comment}}"
+        state: present
+        ttl: "{{cname_ttl}}"
+        provider: "{{provider}}"
+    - name: Querying the newly created DNS records
+      ansible.builtin.debug:
+        msg: "{{lookup('community.general.dig', '{{a_rec}}.')}}"

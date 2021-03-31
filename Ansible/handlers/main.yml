@@ -1,0 +1,6 @@
+---
+- name: a_rec_query
+  ansible.builtin.debug:
+    msg: "{{ lookup('community.general.dig', '{{a_rec}}.', '@10.0.0.19') }}" # @10.0.0.19 is the DNS Server IP.
+
+- name:

@@ -1,0 +1,41 @@
+---
+- name: Validating DNS Records
+  debug:
+    msg:
+      - DNS Record for {{query.results[0]['item']['rec']}} already exists and is resolving to {{query.results[0]['ansible_facts']['dig_query']}}!
+  when: (query.results[0]['ansible_facts']['dig_query']) != 'NXDOMAIN'
+- include_tasks: 010_1_dependent_script.yml
+  when: (query.results[0]['ansible_facts']['dig_query']) == 'NXDOMAIN'
+######################################################################################
+- name: Validating DNS Records
+  debug:
+    msg:
+      - DNS Record for {{query.results[1]['item']['rec']}} already exists and is resolving to {{query.results[1]['ansible_facts']['dig_query']}}!
+  when: (query.results[1]['ansible_facts']['dig_query']) != 'NXDOMAIN'
+- include_tasks: 010_2_dependent_script.yml
+  when: (query.results[1]['ansible_facts']['dig_query']) == 'NXDOMAIN'
+######################################################################################
+- name: Validating DNS Records
+  debug:
+    msg:
+      - DNS Record for {{query.results[2]['item']['rec']}} already exists and is resolving to {{query.results[2]['ansible_facts']['dig_query']}}!
+  when: (query.results[2]['ansible_facts']['dig_query']) != 'NXDOMAIN'
+- include_tasks: 010_3_dependent_script.yml
+  when: (query.results[2]['ansible_facts']['dig_query']) == 'NXDOMAIN'
+######################################################################################
+- name: Validating DNS Records
+  debug:
+    msg:
+      - DNS Record for {{query.results[3]['item']['rec']}} already exists and is resolving to {{query.results[3]['ansible_facts']['dig_query']}}!
+  when: (query.results[3]['ansible_facts']['dig_query']) != 'NXDOMAIN'
+- include_tasks: 010_4_dependent_script.yml
+  when: (query.results[3]['ansible_facts']['dig_query']) == 'NXDOMAIN'
+######################################################################################
+- name: Validating DNS Records
+  debug:
+    msg:
+      - DNS Record for {{query.results[4]['item']['rec']}} already exists and is resolving to {{query.results[4]['ansible_facts']['dig_query']}}!
+  when: (query.results[4]['ansible_facts']['dig_query']) != 'NXDOMAIN'
+- include_tasks: 010_5_dependent_script.yml
+  when: (query.results[4]['ansible_facts']['dig_query']) == 'NXDOMAIN'
+######################################################################################

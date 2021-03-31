@@ -1,0 +1,19 @@
+---
+- hosts: infoblox
+  connection: local
+  var_files:
+    - ./005-ansible-nios_a-module-create-a_record-via-user-input.yml
+    - ./006-ansible-nios_cname-module-create-cname_record-via-user-input.yml
+
+  vars_prompt:
+    - name: record
+      prompt: Which DNS record would you like to create? (Type 'cname' or 'a' in lower case)
+      private: no
+
+  tasks:
+    - import_tasks: 005-ansible-nios_a-module-create-a_record-via-user-input.yml
+      static: yes
+      when: record == 'a'
+    - import_tasks: 006-ansible-nios_cname-module-create-cname_record-via-user-input.yml
+      when: record == 'cname'
+      static: yes

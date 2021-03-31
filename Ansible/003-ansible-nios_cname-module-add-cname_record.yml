@@ -1,0 +1,13 @@
+---
+- name: Create CNAME Records
+  hosts: infoblox
+  connection: local
+  tasks:
+    - name: Creating CNAME Records
+      nios_cname_record:
+        name: google.avilabs.com
+        canonical: www.google.com
+        comment: test cname record
+        state: present
+        ttl: 300 # in seconds
+        provider: "{{provider}}"

@@ -1,0 +1,40 @@
+---
+- hosts: infoblox
+  connection: local
+  vars_files:
+    - ./009_dependent_script.yml
+    - ./009_play_errors.yml
+
+  vars_prompt:
+    - name: a_rec
+      prompt: Enter the Fully Qualified Domain Name of 'A' Record (eg - test.abc.com)
+      private: no
+    - name: a_ip
+      prompt: Enter the IP Address of the 'A' Record (eg - 1.2.3.4)
+      private: no
+    - name: a_ttl
+      prompt: Enter the TTL value in seconds for the 'A' Record
+      private: no
+      default: 300
+    - name: a_comment
+      prompt: Enter the comment for the 'A' Record
+      private: no
+      default: Created by Ansible
+
+  tasks:
+    - name: Validating User Input
+      ansible.builtin.set_fact:
+        dig_query: "{{ lookup('community.general.dig', '{{a_rec}}.', '@10.0.0.19') }}" # @10.0.0.19 is the DNS Server IP.
+      failed_when: Invalid input. Please try again with Fully Qualified Domain Name (eg - test.abc.com).
+    - name: Record Exists!
+      debug:
+        msg: "DNS Record for {{a_rec}} already exist and is resolving to {{dig_query}}."
+      when: dig_query != 'NXDOMAIN'
+    - include_tasks: 009_dependent_script.yml
+      when: dig_query == 'NXDOMAIN'
+  #    - debug: msg={{dns_change}}
+
+  handlers:
+    - name: a_rec_query
+      ansible.builtin.debug:
+        msg: "DNS Record {{a_rec}} has been created! Its resolving to {{ lookup('community.general.dig', '{{a_rec}}.', '@10.0.0.19') }}." # @10.0.0.19 is the DNS Server IP

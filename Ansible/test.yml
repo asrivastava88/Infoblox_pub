@@ -1,0 +1,57 @@
+## Script to build var file ##
+- name: Build Var File
+  hosts: localhost
+  gather_facts: false
+
+  ## Get user input ##
+
+  vars_prompt:
+    - name: device_name
+      prompt: "Device Name"
+      private: no
+      default: FGT-LAB-01
+    - name: adom_name
+      prompt: "ADOM Name"
+      private: no
+      default: root
+    - name: new_curr_vdom
+      prompt: "New Current VDOM"
+      private: no
+      default: station
+    - name: host_ip
+      prompt: "IP or Hostname"
+      private: no
+      default: 192.168.254.16
+
+  tasks:
+    - name: Build file with var prompt data
+      create: yes
+      lineinfile:
+      path: ./var_buildfile_{{ device_name }}.yml
+      line: "- { device_name: {{ device_name }}, adom_name: {{adom_name}}, new_curr_vdom: {{new_curr_vdom}}, host_ip: {{host_ip}} }"
+
+---
+# current_zones:
+# - { vdom: inner, zone: Station.Controlled, add_int: , ext_int: }
+# - { vdom: inner, zone: Station.Restricted, add_int: , ext_int: }
+# - { vdom: inner, zone: Station.Transit, add_int: vlink_inner1, ext_int: inner-transit }
+# - { vdom: outer, zone: Station.Transit, add_int: vlink_outer1, ext_int: outer-transit }
+# - { vdom: outer, zone: Station.DXTransit, add_int: , ext_int: }
+
+# params:
+#   - url: "/pm/config/device/{​​​​​​​​{​​​​​​​​ device_name }​​​​​​​​}​​​​​​​​/vdom/{​​​​​​​​{​​​​​​​​ new_curr_vdom }​​​​​​​​}​​​​​​​​/system/
+
+#     But as far as building a Dict then it would be key: {​{​ var_prompt_1 }​}​ value: {​{​ var_prompt_2 }​}​
+#     Nope not at all. Sure something like could be achieved in multi ways...like we know the snmp is the same always so you could hit all devices with an snmp update then update the site specific info since that would be unique right?
+# ​[Yesterday 2:57 PM] Chad Flores
+#     So I am not aware of anything in Ansible where it would populate a var file (yaml) based on user input. I do have a need for this though in my project as the var file looks something like below.
+
+# I load this var file at the time of the play...only use the vars_prompt to get info on the device name and other vars that don't need to be static in the play.
+# So this would be a list of dictionaries which would be would you would need.
+
+# current_zones:
+#   - {​​​​​​​​ vdom: inner, zone: Station.Controlled, add_int: , ext_int: }​​​​​​​​
+#   - {​​​​​​​​ vdom: inner, zone: Station.Restricted, add_int: , ext_int: }​​​​​​​​
+#   - {​​​​​​​​ vdom: inner, zone: Station.Transit, add_int: vlink_inner1, ext_int: inner-transit }​​​​​​​​
+#   - {​​​​​​​​ vdom: outer, zone: Station.Transit, add_int: vlink_outer1, ext_int: outer-transit }​​​​​​​​
+#   - {​​​​​​​​ vdom: outer, zone: Station.DXTransit, add_int: , ext_int: }​​​​​​​​

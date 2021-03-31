@@ -1,0 +1,131 @@
+---
+- hosts: infoblox
+  connection: local
+
+  vars_files:
+    - ./010_pre_change_messages.yml
+    - ./010_1_dependent_script.yml
+    - ./010_2_dependent_script.yml
+    - ./010_3_dependent_script.yml
+    - ./010_4_dependent_script.yml
+    - ./010_5_dependent_script.yml
+
+  vars_prompt:
+    - name: a_rec_1
+      prompt: Enter the Fully Qualified Domain Name of 'A' Record (eg - test.abc.com)
+      private: no
+    - name: a_ip_1
+      prompt: Enter the IP Address of the 'A' Record (eg - 1.2.3.4)
+      private: no
+    - name: a_ttl_1
+      prompt: Enter the TTL value in seconds for the 'A' Record
+      private: no
+      default: 300
+    - name: a_comment_1
+      prompt: Enter the comment for the 'A' Record
+      private: no
+      default: Created by Ansible
+    - name: a_rec_2
+      prompt: Enter the Fully Qualified Domain Name of 'A' Record (eg - test.abc.com)
+      private: no
+    - name: a_ip_2
+      prompt: Enter the IP Address of the 'A' Record (eg - 1.2.3.4)
+      private: no
+    - name: a_ttl_2
+      prompt: Enter the TTL value in seconds for the 'A' Record
+      private: no
+      default: 300
+    - name: a_comment_2
+      prompt: Enter the comment for the 'A' Record
+      private: no
+      default: Created by Ansible
+    - name: a_rec_3
+      prompt: Enter the Fully Qualified Domain Name of 'A' Record (eg - test.abc.com)
+      private: no
+    - name: a_ip_3
+      prompt: Enter the IP Address of the 'A' Record (eg - 1.2.3.4)
+      private: no
+    - name: a_ttl_3
+      prompt: Enter the TTL value in seconds for the 'A' Record
+      private: no
+      default: 300
+    - name: a_comment_3
+      prompt: Enter the comment for the 'A' Record
+      private: no
+      default: Created by Ansible
+    - name: a_rec_4
+      prompt: Enter the Fully Qualified Domain Name of 'A' Record (eg - test.abc.com)
+      private: no
+    - name: a_ip_4
+      prompt: Enter the IP Address of the 'A' Record (eg - 1.2.3.4)
+      private: no
+    - name: a_ttl_4
+      prompt: Enter the TTL value in seconds for the 'A' Record
+      private: no
+      default: 300
+    - name: a_comment_4
+      prompt: Enter the comment for the 'A' Record
+      private: no
+      default: Created by Ansible
+    - name: a_rec_5
+      prompt: Enter the Fully Qualified Domain Name of 'A' Record (eg - test.abc.com)
+      private: no
+    - name: a_ip_5
+      prompt: Enter the IP Address of the 'A' Record (eg - 1.2.3.4)
+      private: no
+    - name: a_ttl_5
+      prompt: Enter the TTL value in seconds for the 'A' Record
+      private: no
+      default: 300
+    - name: a_comment_5
+      prompt: Enter the comment for the 'A' Record
+      private: no
+      default: Created by Ansible
+
+  vars:
+    records:
+      - rec: "{{a_rec_1}}"
+        ip: "{{a_ip_1}}"
+        ttl: "{{a_ttl_1}}"
+        comm: "{{a_comment_1}}"
+      - rec: "{{a_rec_2}}"
+        ip: "{{a_ip_2}}"
+        ttl: "{{a_ttl_2}}"
+        comm: "{{a_comment_2}}"
+      - rec: "{{a_rec_3}}"
+        ip: "{{a_ip_3}}"
+        ttl: "{{a_ttl_3}}"
+        comm: "{{a_comment_3}}"
+      - rec: "{{a_rec_4}}"
+        ip: "{{a_ip_4}}"
+        ttl: "{{a_ttl_4}}"
+        comm: "{{a_comment_4}}"
+      - rec: "{{a_rec_5}}"
+        ip: "{{a_ip_5}}"
+        ttl: "{{a_ttl_5}}"
+        comm: "{{a_comment_5}}"
+
+  tasks:
+    - name: Validating User Inputs
+      ansible.builtin.set_fact:
+        dig_query: "{{ lookup('community.general.dig', '{{item.rec}}.', '@10.0.0.19') }}" # @10.0.0.19 is the DNS Server IP.
+      with_items: "{{records}}"
+      register: query
+    - include_tasks: 010_pre_change_messages.yml
+
+  handlers:
+    - name: First DNS Query
+      ansible.builtin.debug:
+        msg: "DNS Record {{a_rec_1}} has been created! Its resolving to {{ lookup('community.general.dig', '{{a_rec_1}}.', '@10.0.0.19') }}."
+    - name: Second DNS Query
+      ansible.builtin.debug:
+        msg: "DNS Record {{a_rec_2}} has been created! Its resolving to {{ lookup('community.general.dig', '{{a_rec_2}}.', '@10.0.0.19') }}."
+    - name: Third DNS Query
+      ansible.builtin.debug:
+        msg: "DNS Record {{a_rec_3}} has been created! Its resolving to {{ lookup('community.general.dig', '{{a_rec_3}}.', '@10.0.0.19') }}."
+    - name: Fourth DNS Query
+      ansible.builtin.debug:
+        msg: "DNS Record {{a_rec_4}} has been created! Its resolving to {{ lookup('community.general.dig', '{{a_rec_4}}.', '@10.0.0.19') }}."
+    - name: Fifth DNS Query
+      ansible.builtin.debug:
+        msg: "DNS Record {{a_rec_5}} has been created! Its resolving to {{ lookup('community.general.dig', '{{a_rec_5}}.', '@10.0.0.19') }}."

@@ -1,0 +1,12 @@
+---
+- hosts: infoblox
+  connection: local
+  tasks:
+    - name: Create A Record
+      community.general.nios_a_record:
+        name: record2.avilabs.com
+        ipv4addr: 10.0.0.86
+        comment: test record
+        state: absent
+        ttl: 300 # in seconds
+        provider: "{{provider}}"

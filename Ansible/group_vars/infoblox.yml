@@ -1,0 +1,6 @@
+---
+provider:
+  host: "{{inventory_hostname}}"
+  username: admin
+  password: infoblox
+  validate_certs: no

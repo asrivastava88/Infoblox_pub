@@ -1,0 +1,27 @@
+---
+- hosts: infoblox
+  connection: local
+  vars_prompt:
+    - name: a_rec
+      prompt: Enter the Fully Qualified Domain Name of 'A' Record (eg - test.abc.com)
+      private: no
+    - name: a_ip
+      prompt: Enter the IP Address of the 'A' Record (eg - 1.2.3.4)
+      private: no
+    - name: a_ttl
+      prompt: Enter the TTL value in seconds for the 'A' Record
+      private: no
+      default: 300
+    - name: a_comment
+      prompt: Enter the comment for the 'A' Record
+      private: no
+
+  tasks:
+    - name: Creating A Record
+      community.general.nios_a_record:
+        name: "{{a_rec}}"
+        ipv4addr: "{{a_ip}}"
+        comment: "{{a_comment}}"
+        state: present
+        ttl: "{{a_ttl}}"
+        provider: "{{provider}}"

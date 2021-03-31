@@ -1,0 +1,16 @@
+---
+- name: Running Script
+  block:
+    - name: Creating DNS Record
+      community.general.nios_a_record:
+        name: "{{a_rec}}"
+        ipv4addr: "{{a_ip}}"
+        comment: "{{a_comment}}"
+        state: present
+        ttl: "{{a_ttl}}"
+        provider: "{{provider}}"
+      register: dns_change
+      notify: a_rec_query
+
+  rescue:
+    - include_tasks: 009_play_errors.yml
